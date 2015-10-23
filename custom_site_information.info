@@ -1,0 +1,7 @@
+name = Custom Site Information
+description = This module provides custom settings for Site Information section of Configuration Page and displays Basic Page outout in Jason format.
+package = Custom
+core = 7.x
+
+configure = admin/config/system/site-information
+version = "7.x-1.x-dev"

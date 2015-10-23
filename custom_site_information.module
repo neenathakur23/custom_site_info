@@ -1,0 +1,55 @@
+<?php
+/**
+ * @file
+ * Module file for custom_site_information module.
+ * Created by Neena Thakur
+ * on 22-Oct-2015
+ */ 
+
+ /* this file contains helper function of custom_site_information.module */ 
+module_load_include("inc", "custom_site_information", "includes/custom_site_information_functions");
+
+/**
+* Implements hook_menu().
+*/
+function custom_site_information_menu() {
+  $items = array(); 
+  
+  /* Create url only if Site API Key is set */
+  if(variable_get('siteapikey')){
+  	
+	/* Argument 1 is Site API Key and Argument 2 is Node ID */
+    $items['page_json/%/%'] = array(
+      'title' => 'Page Jason Output',
+      'page callback' => '_custom_site_information_json_output',      
+      'page arguments' => array(1,2),
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+    );
+  }
+	
+  return $items;
+}
+
+function custom_site_information_form_alter(&$form, &$form_state){
+  $form_id = $form["#form_id"];
+  
+  if($form_id=='system_site_information_settings'){
+	  
+	$form['site_information']['siteapikey'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Site API Key'),
+      '#default_value' => variable_get('siteapikey', ''),
+      '#attributes' => array('placeholder' => t('No API Key yet')),
+	);
+	
+	if(variable_get('siteapikey')){
+		$form['actions']['submit']['#value'] = "Update Configuration";
+	}
+	
+	/* _custom_site_information_form_submit is custom submit handler
+	 * system_settings_form_submit is default handler */
+	$form['#submit'] = array('_custom_site_information_form_submit','system_settings_form_submit');
+  }
+}
+	
